@@ -1,0 +1,801 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nele — Terminassistentin Demo | Mustafa Bozdogan</title>
+<meta name="description" content="Live-Demo: eine KI-Terminassistentin, die Anfragen entgegennimmt, den Kalender prüft und den Termin automatisch bestätigt.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root{color-scheme:light}
+  body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}
+  img{max-width:100%}
+  [hidden]:not([hidden=until-found i]){display:none!important}
+
+  :root{
+    --paper:#f4f6f0;
+    --paper-raised:#ffffff;
+    --ink:#1c2320;
+    --ink-soft:#5a6660;
+    --ink-faint:#8a948d;
+    --line:#dde1d7;
+    --accent:#2f6f62;
+    --accent-ink:#ffffff;
+    --accent-soft:#dfece8;
+    --amber:#c97f2e;
+    --amber-soft:#f4e4cc;
+    --danger:#a34b3f;
+    --shadow: 30 40 35;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#12140f;
+      --paper-raised:#1a1e18;
+      --ink:#e9ece5;
+      --ink-soft:#a3ada4;
+      --ink-faint:#6f786f;
+      --line:#2c322a;
+      --accent:#72baa8;
+      --accent-ink:#0d1512;
+      --accent-soft:#1f332c;
+      --amber:#e0a254;
+      --amber-soft:#3a2c18;
+      --danger:#d98d80;
+      --shadow: 0 0 0;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#12140f;
+    --paper-raised:#1a1e18;
+    --ink:#e9ece5;
+    --ink-soft:#a3ada4;
+    --ink-faint:#6f786f;
+    --line:#2c322a;
+    --accent:#72baa8;
+    --accent-ink:#0d1512;
+    --accent-soft:#1f332c;
+    --amber:#e0a254;
+    --amber-soft:#3a2c18;
+    --danger:#d98d80;
+    --shadow: 0 0 0;
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+    line-height:1.5;
+  }
+  .page{
+    max-width:1080px;
+    margin:0 auto;
+    padding:48px 28px 64px;
+  }
+
+  .top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:24px;
+    flex-wrap:wrap;
+    margin-bottom:36px;
+  }
+  .eyebrow{
+    font-family:"JetBrains Mono", ui-monospace, monospace;
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--accent);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+  }
+  .eyebrow .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 0 0 rgba(47,111,98,.5);
+    animation:pulse 2.2s infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(47,111,98,.35); }
+    70%{ box-shadow:0 0 0 5px rgba(47,111,98,0); }
+    100%{ box-shadow:0 0 0 0 rgba(47,111,98,0); }
+  }
+  h1{
+    font-family:"Fraunces", ui-serif, Georgia, serif;
+    font-weight:600;
+    font-size:3.2rem;
+    line-height:1;
+    margin:0 0 8px;
+    text-wrap:balance;
+  }
+  .subtitle{
+    font-size:17px;
+    color:var(--ink-soft);
+    max-width:46ch;
+  }
+  .top-meta{
+    font-family:"JetBrains Mono", ui-monospace, monospace;
+    font-size:12.5px;
+    color:var(--ink-faint);
+    text-align:right;
+    line-height:1.7;
+  }
+  .top-meta a{ color:var(--accent); text-decoration:none; }
+
+  .layout{
+    display:grid;
+    grid-template-columns:420px 1fr;
+    gap:28px;
+    align-items:start;
+  }
+  @media (max-width:860px){
+    .layout{ grid-template-columns:1fr; }
+  }
+
+  .widget{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:18px;
+    box-shadow:0 18px 40px -20px rgba(var(--shadow)/.35);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  .widget-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px 18px;
+    border-bottom:1px solid var(--line);
+  }
+  .avatar{
+    width:38px; height:38px; border-radius:50%;
+    background:linear-gradient(155deg, var(--accent), #1f4a41);
+    color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-family:"Fraunces", serif;
+    font-weight:600;
+    font-size:16px;
+    flex-shrink:0;
+  }
+  .widget-head .who .name{ font-weight:700; font-size:14.5px; }
+  .widget-head .who .status{
+    font-size:12px; color:var(--ink-faint);
+    display:flex; align-items:center; gap:5px;
+  }
+  .widget-head .who .status .d{ width:6px;height:6px;border-radius:50%;background:var(--accent); }
+
+  .steps{
+    display:flex;
+    gap:6px;
+    padding:12px 18px 0;
+  }
+  .step-dot{
+    flex:1;
+    height:3px;
+    border-radius:2px;
+    background:var(--line);
+    position:relative;
+    overflow:hidden;
+  }
+  .step-dot.done, .step-dot.active{ background:var(--accent); }
+
+  .chat{
+    padding:18px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    min-height:200px;
+    max-height:420px;
+    overflow-y:auto;
+  }
+  .msg{
+    max-width:86%;
+    padding:10px 13px;
+    border-radius:14px;
+    font-size:14.5px;
+    animation:rise .28s ease both;
+  }
+  @keyframes rise{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:translateY(0); } }
+  .msg.bot{
+    background:var(--accent-soft);
+    color:var(--ink);
+    border-bottom-left-radius:4px;
+    align-self:flex-start;
+  }
+  .msg.user{
+    background:var(--ink);
+    color:var(--paper);
+    border-bottom-right-radius:4px;
+    align-self:flex-end;
+  }
+  .msg.system{
+    align-self:flex-start;
+    color:var(--ink-soft);
+    font-family:"JetBrains Mono", ui-monospace, monospace;
+    font-size:12.5px;
+    display:flex; align-items:center; gap:7px;
+  }
+  .msg.system .check{
+    width:14px; height:14px; flex-shrink:0;
+  }
+  .msg.system .check circle{ fill:none; stroke:var(--accent); stroke-width:2; }
+  .msg.system .check path{
+    fill:none; stroke:var(--accent); stroke-width:2.2;
+    stroke-linecap:round; stroke-linejoin:round;
+    stroke-dasharray:14; stroke-dashoffset:14;
+    animation:draw .3s ease forwards .1s;
+  }
+  @keyframes draw{ to{ stroke-dashoffset:0; } }
+
+  .typing{
+    align-self:flex-start;
+    background:var(--accent-soft);
+    border-radius:14px;
+    border-bottom-left-radius:4px;
+    padding:11px 14px;
+    display:flex;
+    gap:4px;
+  }
+  .typing span{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--ink-faint);
+    animation:bounce 1.4s infinite;
+  }
+  .typing span:nth-child(2){ animation-delay:.18s; }
+  .typing span:nth-child(3){ animation-delay:.36s; }
+  @keyframes bounce{ 0%,60%,100%{ transform:translateY(0); opacity:.5; } 30%{ transform:translateY(-2px); opacity:1; } }
+
+  .composer{
+    border-top:1px solid var(--line);
+    padding:14px 18px 18px;
+  }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{
+    font-family:"Plus Jakarta Sans", sans-serif;
+    font-size:13.5px;
+    font-weight:600;
+    background:var(--paper);
+    border:1px solid var(--line);
+    color:var(--ink);
+    border-radius:10px;
+    padding:9px 12px;
+    cursor:pointer;
+    text-align:left;
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+  }
+  .chip-icon{ display:flex; align-items:center; gap:7px; color:var(--ink); }
+  .chip-icon svg{ color:var(--accent); flex-shrink:0; }
+  .chip small{ font-weight:500; color:var(--ink-faint); font-size:11.5px; margin-left:22px; }
+  .chip:hover{ border-color:var(--accent); }
+  .chip:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  .days{ display:flex; flex-direction:column; gap:12px; }
+  .day-label{
+    font-family:"JetBrains Mono", ui-monospace, monospace;
+    font-size:11.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin-bottom:6px;
+  }
+  .slots{ display:flex; flex-wrap:wrap; gap:7px; }
+  .slot{
+    font-family:"JetBrains Mono", ui-monospace, monospace;
+    font-variant-numeric:tabular-nums;
+    font-size:12.5px;
+    border:1px solid var(--line);
+    background:var(--paper);
+    color:var(--ink);
+    border-radius:8px;
+    padding:7px 10px;
+    cursor:pointer;
+  }
+  .slot:hover{ border-color:var(--accent); color:var(--accent); }
+  .slot:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .slot.booked{
+    text-decoration:line-through;
+    color:var(--ink-faint);
+    background:transparent;
+    cursor:not-allowed;
+    opacity:.6;
+  }
+
+  .field{ display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
+  .field label{ font-size:12.5px; font-weight:600; color:var(--ink-soft); }
+  .field input, .field textarea{
+    font-family:inherit;
+    font-size:14.5px;
+    padding:9px 11px;
+    border-radius:9px;
+    border:1px solid var(--line);
+    background:var(--paper);
+    color:var(--ink);
+  }
+  .field input:focus, .field textarea:focus{ outline:2px solid var(--accent); outline-offset:1px; }
+  .field textarea{ resize:vertical; min-height:56px; }
+
+  .btn{
+    font-family:"Plus Jakarta Sans", sans-serif;
+    font-weight:700;
+    font-size:14px;
+    border:none;
+    border-radius:10px;
+    padding:11px 16px;
+    cursor:pointer;
+    background:var(--amber);
+    color:#fff;
+  }
+  .btn:disabled{ opacity:.4; cursor:not-allowed; }
+  .btn.ghost{
+    background:transparent;
+    color:var(--accent);
+    border:1px solid var(--line);
+  }
+  .btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  .confirm-card{
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px;
+    background:var(--paper);
+    margin-top:4px;
+  }
+  .confirm-card .row{ display:flex; justify-content:space-between; font-size:13.5px; padding:4px 0; }
+  .confirm-card .row span:first-child{ color:var(--ink-faint); }
+  .confirm-card .row span:last-child{ font-weight:600; }
+
+  .mail-preview{
+    margin-top:10px;
+    border:1px dashed var(--line);
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+  .mail-preview .subj{ font-weight:700; color:var(--ink); margin-bottom:4px; }
+  .mail-preview .tag{
+    font-family:"JetBrains Mono", ui-monospace, monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--ink-faint);
+    margin-bottom:6px;
+    display:block;
+  }
+
+  .sidebar{ display:flex; flex-direction:column; gap:20px; }
+  .panel{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:20px 22px;
+  }
+  .panel h2{
+    font-family:"JetBrains Mono", ui-monospace, monospace;
+    font-size:12px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin:0 0 16px;
+  }
+
+  .pipeline{ position:relative; padding:6px 0 2px; }
+  .pipeline-track{
+    position:relative;
+    height:2px;
+    background:var(--line);
+    margin:19px 0 10px;
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .pipeline-pulse{
+    position:absolute;
+    top:-3px;
+    width:8px; height:8px;
+    border-radius:50%;
+    background:var(--amber);
+    animation:flow 3.6s linear infinite;
+  }
+  @keyframes flow{
+    0%{ left:0%; opacity:0; }
+    8%{ opacity:1; }
+    92%{ opacity:1; }
+    100%{ left:100%; opacity:0; }
+  }
+  .pipeline-nodes{ display:flex; justify-content:space-between; }
+  .pnode{ display:flex; flex-direction:column; align-items:center; gap:6px; width:70px; }
+  .pnode .ic{
+    width:34px; height:34px; border-radius:9px;
+    background:var(--accent-soft);
+    color:var(--accent);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .badges{ display:flex; flex-wrap:wrap; gap:7px; margin-top:14px; }
+  .badge{
+    font-family:"JetBrains Mono", ui-monospace, monospace;
+    font-size:11px;
+    letter-spacing:.02em;
+    color:var(--ink-soft);
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:4px 8px;
+  }
+  .trust-bar{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:10px 18px;
+    font-size:12px;
+    color:var(--ink-faint);
+    border-bottom:1px solid var(--line);
+  }
+  .trust-bar svg{ flex-shrink:0; color:var(--ink-faint); }
+  .pnode .lb{ font-size:10.5px; text-align:center; color:var(--ink-soft); line-height:1.25; }
+
+  .json{
+    font-family:"JetBrains Mono", ui-monospace, monospace;
+    font-size:12px;
+    line-height:1.7;
+    background:var(--ink);
+    color:#cfe8df;
+    border-radius:10px;
+    padding:14px 16px;
+    overflow-x:auto;
+    white-space:pre;
+  }
+  .json .k{ color:#8fd3c2; }
+  .json .s{ color:#e0b675; }
+  .json .p{ color:#7d8f88; }
+
+  .panel p{ font-size:14px; color:var(--ink-soft); margin:0 0 14px; }
+  .cta-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-weight:700;
+    font-size:14px;
+    background:var(--accent);
+    color:var(--accent-ink);
+    text-decoration:none;
+    padding:11px 16px;
+    border-radius:10px;
+  }
+  .cta-btn:hover{ filter:brightness(1.05); }
+  .foot-links{
+    margin-top:14px;
+    font-size:12.5px;
+    color:var(--ink-faint);
+  }
+  .foot-links a{ color:var(--ink-soft); }
+
+  footer{
+    margin-top:44px;
+    padding-top:18px;
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+    font-size:13px;
+    color:var(--ink-faint);
+  }
+  footer a{ color:var(--ink-soft); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001s !important; animation-iteration-count:1 !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="top">
+    <div>
+      <div class="eyebrow"><span class="dot"></span>Live-Demo · Beispielpraxis</div>
+      <h1>Nele</h1>
+      <div class="subtitle">Eine KI-Terminassistentin, die Anfragen entgegennimmt, den Kalender prüft und den Termin automatisch bestätigt. Testen Sie den Ablauf live.</div>
+    </div>
+    <div class="top-meta">
+      Demo von Mustafa Bozdogan<br>
+      KI &amp; Prozessautomatisierung, Münster<br>
+      <a href="mailto:mbozdogan.de@gmail.com">mbozdogan.de@gmail.com</a>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="widget">
+      <div class="widget-head">
+        <div class="avatar">N</div>
+        <div class="who">
+          <div class="name">Nele — Terminassistentin</div>
+          <div class="status"><span class="d"></span>Online · Musterpraxis Dr. Berg</div>
+        </div>
+      </div>
+      <div class="trust-bar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        DSGVO-konform · keine Datenspeicherung in dieser Demo
+      </div>
+      <div class="steps" id="steps">
+        <div class="step-dot" data-s="0"></div>
+        <div class="step-dot" data-s="1"></div>
+        <div class="step-dot" data-s="2"></div>
+        <div class="step-dot" data-s="3"></div>
+      </div>
+      <div class="chat" id="chat"></div>
+      <div class="composer" id="composer"></div>
+    </div>
+
+    <div class="sidebar">
+      <div class="panel">
+        <h2>Hinter den Kulissen</h2>
+        <div class="pipeline">
+          <div class="pipeline-nodes">
+            <div class="pnode"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4V5z"/></svg></div><div class="lb">Anfrage</div></div>
+            <div class="pnode"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9h16M8 3v4M16 3v4"/></svg></div><div class="lb">Kalender-<br>prüfung</div></div>
+            <div class="pnode"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="7" ry="2.5"/><path d="M5 5.5V12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V5.5"/><path d="M5 12v6.5c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V12"/></svg></div><div class="lb">Eintrag&nbsp;im<br>System</div></div>
+            <div class="pnode"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></div><div class="lb">Bestätigung&nbsp;+<br>Erinnerung</div></div>
+          </div>
+          <div class="pipeline-track"><div class="pipeline-pulse"></div></div>
+        </div>
+        <p style="margin-top:14px;">So läuft es im Hintergrund ab, während Sie links mit Nele chatten. Der Payload aktualisiert sich live mit Ihren Eingaben:</p>
+        <div class="json" id="jsonView">{
+  <span class="k">"status"</span>: <span class="s">"warte_auf_eingabe"</span>
+}</div>
+      </div>
+
+      <div class="panel">
+        <h2>Für Ihr Unternehmen</h2>
+        <p>Diese Demo zeigt das Prinzip anhand einer Beispielpraxis. Für Zahnarzt- und Physiopraxen, Restaurants oder Handwerksbetriebe im Raum Münster lässt sich derselbe Ablauf an Ihre eigenen Systeme anbinden: Kalender, CRM, WhatsApp oder E-Mail, umgesetzt mit n8n, Claude und individuellen Integrationen.</p>
+        <a class="cta-btn" href="mailto:mbozdogan.de@gmail.com?subject=Kostenloses%20Erstgespr%C3%A4ch%20KI-Automatisierung">Kostenloses Erstgespräch →</a>
+        <div class="badges">
+          <span class="badge">n8n</span>
+          <span class="badge">OpenAI</span>
+          <span class="badge">Claude</span>
+          <span class="badge">Python</span>
+        </div>
+        <div class="foot-links"><a href="../index.html">← Zurück zur Startseite</a></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>Nele ist eine Beispieldemo, kein reales Praxissystem. Keine Daten werden gespeichert oder versendet.</span>
+    <span>Mustafa Bozdogan · mbozdogan.de@gmail.com</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var chat = document.getElementById('chat');
+  var composer = document.getElementById('composer');
+  var jsonView = document.getElementById('jsonView');
+  var steps = document.querySelectorAll('.step-dot');
+
+  var ICON = {
+    shield: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>',
+    spark: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M8.5 15.5L6 18"/></svg>',
+    chat: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v10H9l-3.5 3.5V15H4V5z"/><path d="M8 9.5h8M8 12h5"/></svg>'
+  };
+  var services = [
+    {id:'kontrolle', label:'Kontrolluntersuchung', dur:'20 Min', icon:ICON.shield},
+    {id:'reinigung', label:'Professionelle Zahnreinigung', dur:'45 Min', icon:ICON.spark},
+    {id:'beratung', label:'Beratungsgespräch', dur:'30 Min', icon:ICON.chat}
+  ];
+
+  function buildDays(){
+    var names = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+    var full  = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+    var months = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+    var out = [];
+    var bookedMap = [[1],[0,3],[]];
+    var timeSets = [['09:00','10:30','13:00','15:30'], ['09:30','11:00','14:00','16:15'], ['09:00','11:30','13:30','16:00']];
+    for(var i=1;i<=3;i++){
+      var d = new Date();
+      d.setDate(d.getDate()+i);
+      var slots = timeSets[i-1].map(function(t, idx){
+        return { time:t, booked: bookedMap[i-1].indexOf(idx) !== -1 };
+      });
+      out.push({ label: full[d.getDay()] + ', ' + d.getDate() + '. ' + months[d.getMonth()], slots: slots });
+    }
+    return out;
+  }
+  var days = buildDays();
+
+  var state = { step:'service', service:null, day:null, time:null, name:'', note:'' };
+
+  function setSteps(idx){
+    steps.forEach(function(s, i){
+      s.classList.toggle('done', i < idx);
+      s.classList.toggle('active', i === idx);
+    });
+  }
+
+  function esc(str){
+    return String(str).replace(/[&<>]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]; });
+  }
+
+  function addUser(text){
+    var el = document.createElement('div');
+    el.className = 'msg user';
+    el.textContent = text;
+    chat.appendChild(el);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function addBot(text, cb){
+    var typing = document.createElement('div');
+    typing.className = 'typing';
+    typing.innerHTML = '<span></span><span></span><span></span>';
+    chat.appendChild(typing);
+    chat.scrollTop = chat.scrollHeight;
+    setTimeout(function(){
+      typing.remove();
+      var el = document.createElement('div');
+      el.className = 'msg bot';
+      el.innerHTML = text;
+      chat.appendChild(el);
+      chat.scrollTop = chat.scrollHeight;
+      if(cb) cb();
+    }, reduced ? 0 : 550);
+  }
+
+  function addSystem(text, delay, cb){
+    setTimeout(function(){
+      var el = document.createElement('div');
+      el.className = 'msg system';
+      el.innerHTML = '<svg class="check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M7 12.5l3 3 7-7"/></svg>' + text;
+      chat.appendChild(el);
+      chat.scrollTop = chat.scrollHeight;
+      if(cb) cb();
+    }, reduced ? 0 : delay);
+  }
+
+  function updateJson(){
+    var lines = ['{'];
+    lines.push('  <span class="k">"status"</span>: <span class="s">"' + (state.step === 'done' ? 'bestaetigt' : 'in_bearbeitung') + '"</span>,');
+    if(state.service) lines.push('  <span class="k">"service"</span>: <span class="s">"' + state.serviceLabel + '"</span>,');
+    if(state.day) lines.push('  <span class="k">"datum"</span>: <span class="s">"' + state.day + '"</span>,');
+    if(state.time) lines.push('  <span class="k">"uhrzeit"</span>: <span class="s">"' + state.time + '"</span>,');
+    if(state.name) lines.push('  <span class="k">"name"</span>: <span class="s">"' + esc(state.name) + '"</span>,');
+    if(state.step === 'done') lines.push('  <span class="k">"erinnerung"</span>: <span class="s">"24h vorher"</span>,');
+    var last = lines[lines.length-1];
+    lines[lines.length-1] = last.replace(/,$/, '');
+    lines.push('}');
+    jsonView.innerHTML = lines.join('\n');
+  }
+
+  function render(){
+    composer.innerHTML = '';
+    if(state.step === 'service'){
+      setSteps(0);
+      var wrap = document.createElement('div');
+      wrap.className = 'chips';
+      services.forEach(function(s){
+        var b = document.createElement('button');
+        b.className = 'chip';
+        b.innerHTML = '<span class="chip-icon">' + s.icon + ' ' + s.label + '</span><small>' + s.dur + '</small>';
+        b.onclick = function(){
+          state.service = s.id; state.serviceLabel = s.label;
+          addUser(s.label);
+          updateJson();
+          state.step = 'slot';
+          addBot('Gute Wahl. Hier sind die nächsten freien Termine für <strong>' + s.label + '</strong>:', render);
+        };
+        wrap.appendChild(b);
+      });
+      composer.appendChild(wrap);
+    }
+    else if(state.step === 'slot'){
+      setSteps(1);
+      var box = document.createElement('div');
+      box.className = 'days';
+      days.forEach(function(d){
+        var dayEl = document.createElement('div');
+        var lab = document.createElement('div');
+        lab.className = 'day-label';
+        lab.textContent = d.label;
+        dayEl.appendChild(lab);
+        var slotsEl = document.createElement('div');
+        slotsEl.className = 'slots';
+        d.slots.forEach(function(s){
+          var btn = document.createElement('button');
+          btn.className = 'slot' + (s.booked ? ' booked' : '');
+          btn.textContent = s.time + (s.booked ? ' · belegt' : '');
+          btn.disabled = s.booked;
+          if(!s.booked){
+            btn.onclick = function(){
+              state.day = d.label; state.time = s.time;
+              addUser(d.label + ' um ' + s.time + ' Uhr');
+              updateJson();
+              state.step = 'form';
+              addBot('Notiert: <strong>' + d.label + ', ' + s.time + ' Uhr</strong>. Wie darf ich den Termin eintragen?', render);
+            };
+          }
+          slotsEl.appendChild(btn);
+        });
+        dayEl.appendChild(slotsEl);
+        box.appendChild(dayEl);
+      });
+      composer.appendChild(box);
+    }
+    else if(state.step === 'form'){
+      setSteps(2);
+      var f = document.createElement('div');
+      f.innerHTML =
+        '<div class="field"><label for="fname">Name</label><input id="fname" type="text" placeholder="Vor- und Nachname"></div>' +
+        '<div class="field"><label for="fnote">Anmerkung (optional)</label><textarea id="fnote" placeholder="z. B. Wunsch nach Erinnerung per SMS"></textarea></div>' +
+        '<button class="btn" id="submitBtn" disabled>Termin anfragen</button>';
+      composer.appendChild(f);
+      var nameInput = f.querySelector('#fname');
+      var noteInput = f.querySelector('#fnote');
+      var submitBtn = f.querySelector('#submitBtn');
+      nameInput.addEventListener('input', function(){
+        submitBtn.disabled = nameInput.value.trim().length < 2;
+      });
+      submitBtn.onclick = function(){
+        state.name = nameInput.value.trim();
+        state.note = noteInput.value.trim();
+        addUser(state.name + (state.note ? ' · ' + state.note : ''));
+        updateJson();
+        state.step = 'processing';
+        composer.innerHTML = '';
+        addSystem('Verfügbarkeit erneut geprüft', 300, function(){
+          addSystem('Termin im Kalender reserviert', 700, function(){
+            addSystem('Bestätigungsmail erstellt', 1100, function(){
+              state.step = 'done';
+              updateJson();
+              addBot('Alles erledigt, ' + state.name.split(' ')[0] + '! Ihr Termin ist bestätigt.', function(){
+                render();
+              });
+            });
+          });
+        });
+      };
+    }
+    else if(state.step === 'done'){
+      setSteps(3);
+      var c = document.createElement('div');
+      c.innerHTML =
+        '<div class="confirm-card">' +
+          '<div class="row"><span>Leistung</span><span>' + state.serviceLabel + '</span></div>' +
+          '<div class="row"><span>Termin</span><span>' + state.day + ', ' + state.time + ' Uhr</span></div>' +
+          '<div class="row"><span>Name</span><span>' + esc(state.name) + '</span></div>' +
+          '<div class="mail-preview">' +
+            '<span class="tag">Bestätigungsmail · Vorschau</span>' +
+            '<div class="subj">Ihr Termin am ' + state.day + '</div>' +
+            'Guten Tag ' + esc(state.name) + ', Ihr Termin (' + state.serviceLabel + ') am ' + state.day + ' um ' + state.time + ' Uhr ist bestätigt. Eine Erinnerung erhalten Sie automatisch 24 Stunden vorher.' +
+          '</div>' +
+        '</div>' +
+        '<button class="btn ghost" id="resetBtn" style="margin-top:12px;">Neue Demo starten</button>';
+      composer.appendChild(c);
+      c.querySelector('#resetBtn').onclick = function(){
+        state = { step:'service', service:null, day:null, time:null, name:'', note:'' };
+        chat.innerHTML = '';
+        updateJson();
+        greet();
+      };
+    }
+  }
+
+  function greet(){
+    setSteps(0);
+    addBot('Hallo! Ich bin Nele, Ihre Terminassistentin bei der Musterpraxis Dr. Berg. Welchen Termin darf ich für Sie buchen?', render);
+  }
+
+  updateJson();
+  greet();
+})();
+</script>
+
+</body>
+</html>

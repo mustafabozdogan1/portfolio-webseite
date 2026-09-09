@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beleg — Rechnungsverarbeitung Demo | Mustafa Bozdogan</title>
+<meta name="description" content="Live-Demo: eingehende Rechnungen automatisch erfassen, prüfen und ins Buchhaltungssystem übertragen.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root{color-scheme:light}
+  body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}
+  img{max-width:100%}
+  [hidden]:not([hidden=until-found i]){display:none!important}
+
+  :root{
+    --paper:#f4f6f0;
+    --paper-raised:#ffffff;
+    --ink:#1c2320;
+    --ink-soft:#5a6660;
+    --ink-faint:#8a948d;
+    --line:#dde1d7;
+    --accent:#2f6f62;
+    --accent-ink:#ffffff;
+    --accent-soft:#dfece8;
+    --amber:#c97f2e;
+    --good:#2f7a4a;
+    --good-soft:#dff0e2;
+    --doc-bg:#fdfdfb;
+    --doc-ink:#26241d;
+    --doc-line:#e4e0d3;
+    --shadow: 30 40 35;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#12140f;
+      --paper-raised:#1a1e18;
+      --ink:#e9ece5;
+      --ink-soft:#a3ada4;
+      --ink-faint:#6f786f;
+      --line:#2c322a;
+      --accent:#72baa8;
+      --accent-ink:#0d1512;
+      --accent-soft:#1f332c;
+      --amber:#e0a254;
+      --good:#7bcf9a;
+      --good-soft:#1c3324;
+      --shadow: 0 0 0;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#12140f; --paper-raised:#1a1e18; --ink:#e9ece5; --ink-soft:#a3ada4;
+    --ink-faint:#6f786f; --line:#2c322a; --accent:#72baa8; --accent-ink:#0d1512;
+    --accent-soft:#1f332c; --amber:#e0a254; --good:#7bcf9a; --good-soft:#1c3324; --shadow:0 0 0;
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+    line-height:1.5;
+  }
+  .page{ max-width:1080px; margin:0 auto; padding:48px 28px 64px; }
+
+  .top{ display:flex; justify-content:space-between; align-items:flex-end; gap:24px; flex-wrap:wrap; margin-bottom:36px; }
+  .eyebrow{
+    font-family:"JetBrains Mono", ui-monospace, monospace; font-size:12px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--accent); display:flex; align-items:center; gap:8px; margin-bottom:10px;
+  }
+  .eyebrow .dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); animation:pulse 2.4s infinite; }
+  @keyframes pulse{ 0%{ box-shadow:0 0 0 0 rgba(47,111,98,.35); } 70%{ box-shadow:0 0 0 5px rgba(47,111,98,0); } 100%{ box-shadow:0 0 0 0 rgba(47,111,98,0); } }
+  h1{ font-family:"Fraunces", ui-serif, Georgia, serif; font-weight:600; font-size:3.2rem; line-height:1; margin:0 0 8px; text-wrap:balance; }
+  .subtitle{ font-size:17px; color:var(--ink-soft); max-width:46ch; }
+  .top-meta{ font-family:"JetBrains Mono", ui-monospace, monospace; font-size:12.5px; color:var(--ink-faint); text-align:right; line-height:1.7; }
+  .top-meta a{ color:var(--accent); text-decoration:none; }
+
+  .layout{ display:grid; grid-template-columns:440px 1fr; gap:28px; align-items:start; }
+  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } }
+
+  .widget{ background:var(--paper-raised); border:1px solid var(--line); border-radius:18px; box-shadow:0 18px 40px -20px rgba(var(--shadow)/.35); overflow:hidden; }
+  .widget-head{ display:flex; align-items:center; gap:12px; padding:16px 18px; border-bottom:1px solid var(--line); }
+  .avatar{ width:38px; height:38px; border-radius:10px; background:linear-gradient(155deg, var(--accent), #1f4a41); color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .who .name{ font-weight:700; font-size:14.5px; }
+  .who .status{ font-size:12px; color:var(--ink-faint); display:flex; align-items:center; gap:5px; }
+  .who .status .d{ width:6px; height:6px; border-radius:50%; background:var(--accent); }
+
+  .trust-bar{ display:flex; align-items:center; gap:7px; padding:10px 18px; font-size:12px; color:var(--ink-faint); border-bottom:1px solid var(--line); }
+  .trust-bar svg{ flex-shrink:0; }
+
+  .steps{ display:flex; gap:6px; padding:12px 18px 0; }
+  .step-dot{ flex:1; height:3px; border-radius:2px; background:var(--line); }
+  .step-dot.done, .step-dot.active{ background:var(--accent); }
+
+  .body{ padding:18px; display:flex; flex-direction:column; gap:16px; }
+
+  .inbox{ display:flex; flex-direction:column; gap:8px; }
+  .inbox-item{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:13.5px;
+  }
+  .inbox-item .meta{ display:flex; flex-direction:column; gap:1px; }
+  .inbox-item .meta .who{ font-weight:600; }
+  .inbox-item .meta .sub{ font-size:11.5px; color:var(--ink-faint); }
+  .tag-new{ font-family:"JetBrains Mono",monospace; font-size:10.5px; background:var(--accent-soft); color:var(--accent); padding:3px 7px; border-radius:5px; }
+  .tag-done{ font-family:"JetBrains Mono",monospace; font-size:10.5px; color:var(--ink-faint); display:flex; align-items:center; gap:4px; }
+  .btn-sm{
+    font-family:"Plus Jakarta Sans"; font-weight:700; font-size:12.5px; border:none; border-radius:8px;
+    padding:7px 11px; cursor:pointer; background:var(--amber); color:#fff;
+  }
+  .btn-sm:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  .doc{
+    position:relative; background:var(--doc-bg); color:var(--doc-ink); border:1px solid var(--doc-line);
+    border-radius:10px; padding:18px 20px; font-size:12.5px; overflow:hidden;
+    box-shadow:0 1px 0 var(--doc-line) inset;
+  }
+  .doc .scan{
+    position:absolute; left:0; right:0; height:38%;
+    background:linear-gradient(180deg, rgba(47,111,98,0) 0%, rgba(47,111,98,.16) 50%, rgba(47,111,98,0) 100%);
+    top:-40%; pointer-events:none; opacity:0;
+  }
+  .doc.scanning .scan{ opacity:1; animation:scan 1.8s ease-in-out infinite; }
+  @keyframes scan{ 0%{ top:-40%; } 100%{ top:100%; } }
+  .doc-head{ display:flex; justify-content:space-between; margin-bottom:14px; }
+  .doc-head .from{ font-weight:700; font-size:13.5px; }
+  .doc-head .addr{ color:#6b6a5e; font-size:11px; margin-top:2px; }
+  .doc-title{ font-family:"Fraunces", serif; font-size:16px; font-weight:600; margin-bottom:10px; }
+  .doc-meta{ display:flex; gap:22px; margin-bottom:12px; }
+  .doc-meta .k{ font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:#8a8874; }
+  .doc-meta .v{ font-family:"JetBrains Mono",monospace; font-size:12.5px; }
+  .field{ border-radius:4px; padding:1px 3px; margin:0 -3px; transition:background .3s, box-shadow .3s; }
+  .field.hit{ background:var(--accent-soft); box-shadow:0 0 0 1px var(--accent); color:var(--accent); font-weight:700; }
+  table.doc-table{ width:100%; border-collapse:collapse; margin-bottom:12px; }
+  table.doc-table th{ text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.04em; color:#8a8874; border-bottom:1px solid var(--doc-line); padding-bottom:5px; }
+  table.doc-table td{ padding:5px 0; border-bottom:1px solid var(--doc-line); font-size:12px; }
+  table.doc-table td:last-child, table.doc-table th:last-child{ text-align:right; }
+  .doc-sums{ margin-left:auto; width:60%; font-size:12px; }
+  .doc-sums .row{ display:flex; justify-content:space-between; padding:2px 0; }
+  .doc-sums .row.total{ font-weight:700; border-top:1px solid var(--doc-line); margin-top:3px; padding-top:5px; }
+  .doc-foot{ margin-top:12px; font-size:10.5px; color:#8a8874; }
+
+  .extract{ display:flex; flex-direction:column; gap:7px; }
+  .extract-row{
+    display:flex; align-items:center; gap:8px; font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-soft);
+    opacity:0; transform:translateY(4px); animation:rise .3s ease forwards;
+  }
+  @keyframes rise{ to{ opacity:1; transform:translateY(0); } }
+  .extract-row .check{ width:13px; height:13px; flex-shrink:0; }
+  .extract-row .check circle{ fill:none; stroke:var(--accent); stroke-width:2; }
+  .extract-row .check path{ fill:none; stroke:var(--accent); stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:14; stroke-dashoffset:14; animation:draw .3s ease forwards .1s; }
+  @keyframes draw{ to{ stroke-dashoffset:0; } }
+  .extract-row b{ color:var(--ink); }
+
+  .review-box{ border:1px solid var(--line); border-radius:12px; padding:14px; background:var(--paper); }
+  .review-box .h{ font-weight:700; font-size:13.5px; margin-bottom:8px; }
+  .review-box .row{ display:flex; justify-content:space-between; font-size:13px; padding:3px 0; }
+  .review-box .row span:first-child{ color:var(--ink-faint); }
+
+  .btn{ font-family:"Plus Jakarta Sans"; font-weight:700; font-size:14px; border:none; border-radius:10px; padding:11px 16px; cursor:pointer; background:var(--amber); color:#fff; }
+  .btn.ghost{ background:transparent; color:var(--accent); border:1px solid var(--line); }
+  .btn:focus-visible, .btn.ghost:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  .success-badge{ display:inline-flex; align-items:center; gap:6px; background:var(--good-soft); color:var(--good); font-weight:700; font-size:13px; padding:6px 11px; border-radius:8px; }
+
+  .ledger{ border-top:1px solid var(--line); padding:14px 18px 18px; }
+  .ledger h3{ font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); margin:0 0 10px; }
+  table.ledger-table{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  table.ledger-table th{ text-align:left; color:var(--ink-faint); font-weight:600; padding-bottom:6px; border-bottom:1px solid var(--line); font-size:11px; text-transform:uppercase; letter-spacing:.03em; }
+  table.ledger-table td{ padding:7px 0; border-bottom:1px solid var(--line); font-variant-numeric:tabular-nums; }
+  table.ledger-table td:last-child, table.ledger-table th:last-child{ text-align:right; }
+  .status-pill{ font-size:11px; font-weight:700; padding:2px 8px; border-radius:99px; background:var(--good-soft); color:var(--good); }
+  .ledger-table tr.new td{ animation:highlight 1.6s ease; }
+  @keyframes highlight{ 0%{ background:var(--accent-soft); } 100%{ background:transparent; } }
+
+  .sidebar{ display:flex; flex-direction:column; gap:20px; }
+  .panel{ background:var(--paper-raised); border:1px solid var(--line); border-radius:16px; padding:20px 22px; }
+  .panel h2{ font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 16px; }
+  .pipeline{ position:relative; padding:6px 0 2px; }
+  .pipeline-track{ position:relative; height:2px; background:var(--line); margin:19px 0 10px; border-radius:2px; overflow:hidden; }
+  .pipeline-pulse{ position:absolute; top:-3px; width:8px; height:8px; border-radius:50%; background:var(--amber); animation:flow 3.6s linear infinite; }
+  @keyframes flow{ 0%{ left:0%; opacity:0; } 8%{ opacity:1; } 92%{ opacity:1; } 100%{ left:100%; opacity:0; } }
+  .pipeline-nodes{ display:flex; justify-content:space-between; }
+  .pnode{ display:flex; flex-direction:column; align-items:center; gap:6px; width:80px; }
+  .pnode .ic{ width:34px; height:34px; border-radius:9px; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; }
+  .pnode .lb{ font-size:10.5px; text-align:center; color:var(--ink-soft); line-height:1.25; }
+  .json{ font-family:"JetBrains Mono",monospace; font-size:12px; line-height:1.7; background:var(--ink); color:#cfe8df; border-radius:10px; padding:14px 16px; overflow-x:auto; white-space:pre; margin-top:14px; }
+  .json .k{ color:#8fd3c2; } .json .s{ color:#e0b675; }
+  .panel p{ font-size:14px; color:var(--ink-soft); margin:0 0 14px; }
+  .cta-btn{ display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:14px; background:var(--accent); color:var(--accent-ink); text-decoration:none; padding:11px 16px; border-radius:10px; }
+  .badges{ display:flex; flex-wrap:wrap; gap:7px; margin-top:14px; }
+  .badge{ font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--ink-soft); background:var(--paper); border:1px solid var(--line); border-radius:6px; padding:4px 8px; }
+  .foot-links{ margin-top:14px; font-size:12.5px; color:var(--ink-faint); }
+  .foot-links a{ color:var(--ink-soft); }
+
+  footer{ margin-top:44px; padding-top:18px; border-top:1px solid var(--line); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-size:13px; color:var(--ink-faint); }
+  footer a{ color:var(--ink-soft); }
+
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.001s !important; animation-iteration-count:1 !important; } }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="top">
+    <div>
+      <div class="eyebrow"><span class="dot"></span>Live-Demo · Beispielbüro</div>
+      <h1>Beleg</h1>
+      <div class="subtitle">Eingehende Rechnungen automatisch erfassen, prüfen und ins Buchhaltungssystem übertragen. Verarbeiten Sie unten eine Beispielrechnung.</div>
+    </div>
+    <div class="top-meta">
+      Demo von Mustafa Bozdogan<br>
+      KI &amp; Prozessautomatisierung, Münster<br>
+      <a href="mailto:mbozdogan.de@gmail.com">mbozdogan.de@gmail.com</a>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="widget">
+      <div class="widget-head">
+        <div class="avatar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg>
+        </div>
+        <div class="who">
+          <div class="name">Beleg — Rechnungsverarbeitung</div>
+          <div class="status"><span class="d"></span>Verbunden mit Buchhaltungssystem</div>
+        </div>
+      </div>
+      <div class="trust-bar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        DSGVO-konform · keine Datenspeicherung in dieser Demo
+      </div>
+      <div class="steps" id="steps">
+        <div class="step-dot" data-s="0"></div>
+        <div class="step-dot" data-s="1"></div>
+        <div class="step-dot" data-s="2"></div>
+        <div class="step-dot" data-s="3"></div>
+      </div>
+      <div class="body" id="body"></div>
+      <div class="ledger">
+        <h3>Buchhaltungssystem — letzte Buchungen</h3>
+        <table class="ledger-table" id="ledgerTable">
+          <thead><tr><th>Datum</th><th>Lieferant</th><th>Beleg-Nr.</th><th>Betrag</th><th>Status</th></tr></thead>
+          <tbody id="ledgerBody">
+            <tr><td>03.09.2026</td><td>Rieper Bürotechnik</td><td>RE-2026-0402</td><td>612,40&nbsp;€</td><td><span class="status-pill">Verbucht</span></td></tr>
+            <tr><td>28.08.2026</td><td>Westfalen Energie</td><td>RE-2026-0388</td><td>1.204,00&nbsp;€</td><td><span class="status-pill">Verbucht</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="panel">
+        <h2>Hinter den Kulissen</h2>
+        <div class="pipeline">
+          <div class="pipeline-nodes">
+            <div class="pnode"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="M4 6.5l8 6.5 8-6.5"/></svg></div><div class="lb">Rechnung<br>eingegangen</div></div>
+            <div class="pnode"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg></div><div class="lb">Texterkennung<br>(KI)</div></div>
+            <div class="pnode"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div><div class="lb">Prüfung<br>(Mensch)</div></div>
+            <div class="pnode"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="7" ry="2.5"/><path d="M5 5.5V12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V5.5"/><path d="M5 12v6.5c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V12"/></svg></div><div class="lb">Verbucht</div></div>
+          </div>
+          <div class="pipeline-track"><div class="pipeline-pulse"></div></div>
+        </div>
+        <p style="margin-top:14px;">Die KI liest die Rechnung, ein Mensch bestätigt kurz, erst dann wird automatisch verbucht. Der Datensatz aktualisiert sich live:</p>
+        <div class="json" id="jsonView">{
+  <span class="k">"status"</span>: <span class="s">"wartet_auf_rechnung"</span>
+}</div>
+      </div>
+
+      <div class="panel">
+        <h2>Für Ihr Unternehmen</h2>
+        <p>Diese Demo zeigt das Prinzip anhand eines Beispielbüros. Für Handel, Handwerk oder Kanzleien im Raum Münster lässt sich derselbe Ablauf an Ihr eigenes Buchhaltungssystem anbinden, mit Claude oder OpenAI zur Texterkennung, Python für die Verarbeitung und einer sicheren Anbindung per REST-Schnittstelle.</p>
+        <a class="cta-btn" href="mailto:mbozdogan.de@gmail.com?subject=Kostenloses%20Erstgespr%C3%A4ch%20KI-Automatisierung">Kostenloses Erstgespräch →</a>
+        <div class="badges">
+          <span class="badge">Claude / OpenAI</span>
+          <span class="badge">Python</span>
+          <span class="badge">REST-Schnittstellen</span>
+          <span class="badge">SQL-Datenbank</span>
+        </div>
+        <div class="foot-links"><a href="../index.html">← Zurück zur Startseite</a></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>Beleg ist eine Beispieldemo, kein reales Buchhaltungssystem. Keine Daten werden gespeichert oder versendet.</span>
+    <span>Mustafa Bozdogan · mbozdogan.de@gmail.com</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var body = document.getElementById('body');
+  var jsonView = document.getElementById('jsonView');
+  var ledgerBody = document.getElementById('ledgerBody');
+  var steps = document.querySelectorAll('.step-dot');
+
+  var invoice = {
+    supplier:'Nordwest Bürobedarf GmbH', addr:'Warendorfer Str. 118, 48145 Münster',
+    nr:'RE-2026-0417', date:'07.09.2026', due:'21.09.2026',
+    items:[
+      {d:'Druckerpapier A4, 80g', m:'20 Karton', e:'24,90 €', s:'498,00 €'},
+      {d:'Toner HP 205A schwarz', m:'6 Stück', e:'62,50 €', s:'375,00 €'},
+      {d:'Bürostuhl, ergonomisch', m:'4 Stück', e:'189,00 €', s:'756,00 €'}
+    ],
+    netto:'1.629,00 €', ust:'309,51 €', gesamt:'1.938,51 €'
+  };
+
+  var state = { step:'inbox' };
+
+  function setSteps(idx){
+    steps.forEach(function(s,i){ s.classList.toggle('done', i<idx); s.classList.toggle('active', i===idx); });
+  }
+
+  function updateJson(extra){
+    var lines = ['{'];
+    lines.push('  <span class="k">"status"</span>: <span class="s">"' + (extra && extra.status || 'wartet_auf_rechnung') + '"</span>' + (extra ? ',' : ''));
+    if(extra){
+      lines.push('  <span class="k">"lieferant"</span>: <span class="s">"' + invoice.supplier + '"</span>,');
+      lines.push('  <span class="k">"rechnungsnr"</span>: <span class="s">"' + invoice.nr + '"</span>,');
+      lines.push('  <span class="k">"betrag"</span>: <span class="s">"' + invoice.gesamt + '"</span>,');
+      if(extra.status === 'verbucht') lines.push('  <span class="k">"verbucht_am"</span>: <span class="s">"' + invoice.date + '"</span>,');
+      var last = lines[lines.length-1]; lines[lines.length-1] = last.replace(/,$/,'');
+    }
+    lines.push('}');
+    jsonView.innerHTML = lines.join('\n');
+  }
+
+  function renderInvoiceDoc(){
+    var rows = invoice.items.map(function(it){
+      return '<tr><td>'+it.d+'</td><td>'+it.m+'</td><td>'+it.e+'</td><td>'+it.s+'</td></tr>';
+    }).join('');
+    return '' +
+    '<div class="doc" id="docCard"><div class="scan"></div>' +
+      '<div class="doc-head"><div><div class="from field" data-f="supplier">'+invoice.supplier+'</div><div class="addr">'+invoice.addr+'</div></div></div>' +
+      '<div class="doc-title">Rechnung</div>' +
+      '<div class="doc-meta">' +
+        '<div><div class="k">Rechnungsnr.</div><div class="v field" data-f="nr">'+invoice.nr+'</div></div>' +
+        '<div><div class="k">Datum</div><div class="v field" data-f="date">'+invoice.date+'</div></div>' +
+        '<div><div class="k">Fällig am</div><div class="v field" data-f="due">'+invoice.due+'</div></div>' +
+      '</div>' +
+      '<table class="doc-table"><thead><tr><th>Beschreibung</th><th>Menge</th><th>Einzelpr.</th><th>Gesamt</th></tr></thead><tbody>'+rows+'</tbody></table>' +
+      '<div class="doc-sums">' +
+        '<div class="row"><span>Netto</span><span>'+invoice.netto+'</span></div>' +
+        '<div class="row"><span>USt. 19%</span><span>'+invoice.ust+'</span></div>' +
+        '<div class="row total"><span>Gesamt</span><span class="field" data-f="gesamt">'+invoice.gesamt+'</span></div>' +
+      '</div>' +
+      '<div class="doc-foot">IBAN DE12 4005 0150 0000 1234 56 · Zahlbar innerhalb 14 Tagen</div>' +
+    '</div>';
+  }
+
+  function render(){
+    body.innerHTML = '';
+    if(state.step === 'inbox'){
+      setSteps(0);
+      body.innerHTML =
+        '<div class="inbox">' +
+          '<div class="inbox-item"><div class="meta"><div class="who">Nordwest Bürobedarf GmbH</div><div class="sub">RE-2026-0417 · vor 2 Minuten</div></div><span class="tag-new">Neu</span></div>' +
+          '<div class="inbox-item"><div class="meta"><div class="who">Rieper Bürotechnik</div><div class="sub">RE-2026-0402</div></div><span class="tag-done">✓ erledigt</span></div>' +
+          '<div class="inbox-item"><div class="meta"><div class="who">Westfalen Energie</div><div class="sub">RE-2026-0388</div></div><span class="tag-done">✓ erledigt</span></div>' +
+        '</div>' +
+        '<button class="btn" id="startBtn">Neue Rechnung automatisch verarbeiten</button>';
+      document.getElementById('startBtn').onclick = function(){
+        state.step = 'scanning';
+        render();
+        runScan();
+      };
+    }
+    else if(state.step === 'scanning' || state.step === 'review'){
+      setSteps(state.step === 'scanning' ? 1 : 2);
+      body.innerHTML = renderInvoiceDoc() + '<div class="extract" id="extractList"></div>' + '<div id="reviewSlot"></div>';
+      if(state.step === 'scanning') document.getElementById('docCard').classList.add('scanning');
+      if(state.step === 'review') showReview();
+    }
+    else if(state.step === 'done'){
+      setSteps(3);
+      body.innerHTML =
+        '<div class="success-badge"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Automatisch geprüft und verbucht</div>' +
+        renderInvoiceDoc() +
+        '<button class="btn ghost" id="resetBtn" style="margin-top:8px;">Nächste Rechnung verarbeiten</button>';
+      document.getElementById('resetBtn').onclick = function(){ state.step='inbox'; updateJson(); render(); };
+    }
+  }
+
+  function runScan(){
+    var fields = [
+      {sel:'supplier', label:'Lieferant', val:invoice.supplier},
+      {sel:'nr', label:'Rechnungsnummer', val:invoice.nr},
+      {sel:'date', label:'Datum', val:invoice.date},
+      {sel:'gesamt', label:'Gesamtbetrag', val:invoice.gesamt}
+    ];
+    var list = document.getElementById('extractList');
+    fields.forEach(function(f, i){
+      setTimeout(function(){
+        var el = document.querySelector('[data-f="'+f.sel+'"]');
+        if(el) el.classList.add('hit');
+        var row = document.createElement('div');
+        row.className = 'extract-row';
+        row.style.animationDelay = '0s';
+        row.innerHTML = '<svg class="check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M7 12.5l3 3 7-7"/></svg>' + f.label + ': <b>' + f.val + '</b>';
+        list.appendChild(row);
+        if(i === fields.length - 1){
+          setTimeout(function(){ state.step = 'review'; render(); }, reduced ? 0 : 500);
+        }
+      }, reduced ? 0 : i * 550);
+    });
+  }
+
+  function showReview(){
+    var slot = document.getElementById('reviewSlot');
+    slot.innerHTML =
+      '<div class="review-box">' +
+        '<div class="h">Zur Bestätigung</div>' +
+        '<div class="row"><span>Lieferant</span><span>'+invoice.supplier+'</span></div>' +
+        '<div class="row"><span>Rechnungsnr.</span><span>'+invoice.nr+'</span></div>' +
+        '<div class="row"><span>Betrag</span><span>'+invoice.gesamt+'</span></div>' +
+        '<div class="row"><span>Fällig am</span><span>'+invoice.due+'</span></div>' +
+      '</div>' +
+      '<button class="btn" id="confirmBtn" style="margin-top:12px;">Jetzt verbuchen</button>';
+    updateJson({status:'zur_pruefung'});
+    document.getElementById('confirmBtn').onclick = function(){
+      state.step = 'done';
+      updateJson({status:'verbucht'});
+      var tr = document.createElement('tr');
+      tr.className = 'new';
+      tr.innerHTML = '<td>'+invoice.date+'</td><td>'+invoice.supplier+'</td><td>'+invoice.nr+'</td><td>'+invoice.gesamt+'</td><td><span class="status-pill">Verbucht</span></td>';
+      ledgerBody.insertBefore(tr, ledgerBody.firstChild);
+      render();
+    };
+  }
+
+  updateJson();
+  render();
+})();
+</script>
+
+</body>
+</html>
