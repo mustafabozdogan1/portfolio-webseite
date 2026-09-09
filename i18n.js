@@ -13,7 +13,7 @@ const translations = {
 
     "hero.eyebrow": "KI & Automatisierung für Unternehmen",
     "hero.tagline": "KI & Prozessautomatisierung für Unternehmen",
-    "hero.text": "Ich helfe Unternehmen, wiederkehrende Aufgaben zu automatisieren und KI sinnvoll in bestehende Abläufe zu integrieren — weniger manuelle Arbeit, weniger Fehler, mehr Zeit für das Wesentliche.",
+    "hero.text": "Ich helfe Unternehmen, wiederkehrende Aufgaben zu automatisieren und KI sinnvoll in bestehende Abläufe zu integrieren. Das bedeutet: weniger manuelle Arbeit, weniger Fehler, mehr Zeit für das Wesentliche.",
     "hero.ctaSecondary": "Leistungen ansehen",
 
     "ticker.label": "Werkzeuge, mit denen ich arbeite",
@@ -75,10 +75,10 @@ const translations = {
     "services.custom.step4": "Getestet & live",
 
     "about.heading": "Über mich",
-    "about.text": "Ich bin Mustafa Bozdogan und unterstütze Unternehmen dabei, Prozesse zu automatisieren und KI dort einzusetzen, wo sie echten Mehrwert schafft. Mein Fokus liegt auf pragmatischen Lösungen, die sich in bestehende Systeme einfügen — kein Ersatz gewachsener Strukturen, sondern gezielte Automatisierung an den Stellen, an denen sie sich am meisten lohnt.",
+    "about.text": "Ich bin Mustafa Bozdogan und unterstütze Unternehmen dabei, Prozesse zu automatisieren und KI dort einzusetzen, wo sie echten Mehrwert schafft. Mein Fokus liegt auf pragmatischen Lösungen, die sich in bestehende Systeme einfügen: kein Ersatz gewachsener Strukturen, sondern gezielte Automatisierung an den Stellen, an denen sie sich am meisten lohnt.",
 
     "references.heading": "Beispielprojekte",
-    "references.intro": "Anonymisierte Beispiele typischer Projekte — zur Veranschaulichung, nicht als Referenz konkreter Kunden.",
+    "references.intro": "Anonymisierte Beispiele typischer Projekte zur Veranschaulichung, nicht als Referenz konkreter Kunden.",
     "references.tag": "Beispiel",
     "references.card1.title": "Automatisierte Rechnungsverarbeitung",
     "references.card1.desc": "Eingehende Rechnungen werden automatisch erfasst, geprüft und ins Buchhaltungssystem übertragen.",
@@ -114,7 +114,7 @@ const translations = {
 
     "hero.eyebrow": "AI & Automation for Businesses",
     "hero.tagline": "AI & Process Automation for Businesses",
-    "hero.text": "I help businesses automate repetitive tasks and meaningfully integrate AI into existing workflows — less manual work, fewer errors, more time for what matters.",
+    "hero.text": "I help businesses automate repetitive tasks and meaningfully integrate AI into existing workflows. The result: less manual work, fewer errors, more time for what matters.",
     "hero.ctaSecondary": "View Services",
 
     "ticker.label": "Tools I work with",
@@ -176,10 +176,10 @@ const translations = {
     "services.custom.step4": "Tested & live",
 
     "about.heading": "About Me",
-    "about.text": "I'm Mustafa Bozdogan, and I help businesses automate processes and apply AI where it creates real value. My focus is on pragmatic solutions that fit into existing systems — not a replacement for what already works, but targeted automation exactly where it pays off most.",
+    "about.text": "I'm Mustafa Bozdogan, and I help businesses automate processes and apply AI where it creates real value. My focus is on pragmatic solutions that fit into existing systems: not a replacement for what already works, but targeted automation exactly where it pays off most.",
 
     "references.heading": "Example Projects",
-    "references.intro": "Anonymized examples of typical projects — for illustration only, not references to specific clients.",
+    "references.intro": "Anonymized examples of typical projects for illustration only, not references to specific clients.",
     "references.tag": "Example",
     "references.card1.title": "Automated Invoice Processing",
     "references.card1.desc": "Incoming invoices are automatically captured, checked, and transferred into the accounting system.",
@@ -215,7 +215,7 @@ const translations = {
 
     "hero.eyebrow": "İşletmeler için Yapay Zeka ve Otomasyon",
     "hero.tagline": "İşletmeler için Yapay Zeka ve Süreç Otomasyonu",
-    "hero.text": "İşletmelerin tekrarlayan görevleri otomatikleştirmesine ve yapay zekayı mevcut iş akışlarına anlamlı şekilde entegre etmesine yardımcı oluyorum — daha az manuel iş, daha az hata, önemli olan şeylere daha çok zaman.",
+    "hero.text": "İşletmelerin tekrarlayan görevleri otomatikleştirmesine ve yapay zekayı mevcut iş akışlarına anlamlı şekilde entegre etmesine yardımcı oluyorum. Sonuç: daha az manuel iş, daha az hata, önemli olan şeylere daha çok zaman.",
     "hero.ctaSecondary": "Hizmetleri Görüntüle",
 
     "ticker.label": "Kullandığım araçlar",
@@ -277,10 +277,10 @@ const translations = {
     "services.custom.step4": "Test edildi ve yayında",
 
     "about.heading": "Hakkımda",
-    "about.text": "Ben Mustafa Bozdogan, işletmelerin süreçlerini otomatikleştirmesine ve yapay zekayı gerçek değer yarattığı yerlerde kullanmasına yardımcı oluyorum. Odak noktam, mevcut sistemlere uyum sağlayan pragmatik çözümler — büyümüş yapıların yerini almak değil, en çok fayda sağladığı noktalarda hedefli otomasyon.",
+    "about.text": "Ben Mustafa Bozdogan, işletmelerin süreçlerini otomatikleştirmesine ve yapay zekayı gerçek değer yarattığı yerlerde kullanmasına yardımcı oluyorum. Odak noktam, mevcut sistemlere uyum sağlayan pragmatik çözümler: büyümüş yapıların yerini almak değil, en çok fayda sağladığı noktalarda hedefli otomasyon.",
 
     "references.heading": "Örnek Projeler",
-    "references.intro": "Tipik projelerin anonimleştirilmiş örnekleri — açıklama amaçlıdır, belirli müşterilere referans değildir.",
+    "references.intro": "Tipik projelerin anonimleştirilmiş örnekleri açıklama amaçlıdır, belirli müşterilere referans değildir.",
     "references.tag": "Örnek",
     "references.card1.title": "Otomatik Fatura İşleme",
     "references.card1.desc": "Gelen faturalar otomatik olarak kaydedilir, kontrol edilir ve muhasebe sistemine aktarılır.",
