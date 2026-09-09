@@ -411,6 +411,19 @@ section {
   margin-bottom: 0.75rem;
 }
 
+.card-demo-link {
+  display: inline-block;
+  margin-top: 0.9rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.card-demo-link:hover {
+  text-decoration: underline;
+}
+
 .about-inner p {
   max-width: 680px;
 }
