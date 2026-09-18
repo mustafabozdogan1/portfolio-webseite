@@ -20,11 +20,12 @@ const translations = {
     "ticker.restApis": "REST-Schnittstellen",
 
     "services.heading": "Leistungen",
-    "services.intro": "Vier Bereiche, in denen Automatisierung den größten Unterschied macht.",
+    "services.intro": "Fünf Bereiche, in denen Automatisierung und smarte Websites den größten Unterschied machen.",
     "services.tabAutomation": "Prozessautomatisierung",
     "services.tabAi": "KI & Chatbots",
     "services.tabData": "Daten & Reports",
     "services.tabCustom": "Individuelle Integrationen",
+    "services.tabWeb": "Professionelle Webseiten",
 
     "services.automation.desc": "Wiederkehrende Abläufe mit n8n oder Zapier verbinden und automatisieren.",
     "services.automation.check1": "Wiederkehrende Aufgaben ohne manuellen Aufwand erledigen",
@@ -74,6 +75,18 @@ const translations = {
     "services.custom.step3": "Systeme verbunden",
     "services.custom.step4": "Getestet & live",
 
+    "services.web.desc": "Professionelle, moderne Webseiten – schnell, responsive und smart mit Automatisierung und KI verknüpft.",
+    "services.web.check1": "Moderne, responsive Websites für Unternehmen und Selbstständige",
+    "services.web.check2": "Schnelle Ladezeiten und solide SEO-Grundlagen",
+    "services.web.check3": "Kontaktformulare, Chat und Automatisierungen direkt integriert",
+    "services.web.check4": "Individuelles Design, das zur Marke passt",
+    "services.web.workflowTitle": "Firmenwebsite",
+    "services.web.workflowMeta": "Status: Live geschaltet",
+    "services.web.step1": "Konzept & Design",
+    "services.web.step2": "Entwicklung",
+    "services.web.step3": "SEO & Performance-Check",
+    "services.web.step4": "Live-Schaltung",
+
     "about.heading": "Über mich",
     "about.text": "Ich bin Mustafa Bozdogan und unterstütze Unternehmen dabei, Prozesse zu automatisieren und KI dort einzusetzen, wo sie echten Mehrwert schafft. Mein Fokus liegt auf pragmatischen Lösungen, die sich in bestehende Systeme einfügen: kein Ersatz gewachsener Strukturen, sondern gezielte Automatisierung an den Stellen, an denen sie sich am meisten lohnt.",
 
@@ -122,11 +135,12 @@ const translations = {
     "ticker.restApis": "REST APIs",
 
     "services.heading": "Services",
-    "services.intro": "Four areas where automation makes the biggest difference.",
+    "services.intro": "Five areas where automation and smart websites make the biggest difference.",
     "services.tabAutomation": "Process Automation",
     "services.tabAi": "AI & Chatbots",
     "services.tabData": "Data & Reports",
     "services.tabCustom": "Custom Integrations",
+    "services.tabWeb": "Professional Websites",
 
     "services.automation.desc": "Connect and automate recurring workflows with n8n or Zapier.",
     "services.automation.check1": "Handle recurring tasks without manual effort",
@@ -176,6 +190,18 @@ const translations = {
     "services.custom.step3": "Systems connected",
     "services.custom.step4": "Tested & live",
 
+    "services.web.desc": "Professional, modern websites – fast, responsive, and smartly connected to automation and AI.",
+    "services.web.check1": "Modern, responsive websites for businesses and freelancers",
+    "services.web.check2": "Fast load times and solid SEO fundamentals",
+    "services.web.check3": "Contact forms, chat, and automations built right in",
+    "services.web.check4": "Custom design that fits your brand",
+    "services.web.workflowTitle": "Company Website",
+    "services.web.workflowMeta": "Status: Live",
+    "services.web.step1": "Concept & design",
+    "services.web.step2": "Development",
+    "services.web.step3": "SEO & performance check",
+    "services.web.step4": "Going live",
+
     "about.heading": "About Me",
     "about.text": "I'm Mustafa Bozdogan, and I help businesses automate processes and apply AI where it creates real value. My focus is on pragmatic solutions that fit into existing systems: not a replacement for what already works, but targeted automation exactly where it pays off most.",
 
@@ -224,11 +250,12 @@ const translations = {
     "ticker.restApis": "REST Arayüzleri",
 
     "services.heading": "Hizmetler",
-    "services.intro": "Otomasyonun en büyük farkı yarattığı dört alan.",
+    "services.intro": "Otomasyonun ve akıllı web sitelerinin en büyük farkı yarattığı beş alan.",
     "services.tabAutomation": "Süreç Otomasyonu",
     "services.tabAi": "Yapay Zeka ve Chatbotlar",
     "services.tabData": "Veri ve Raporlar",
     "services.tabCustom": "Özel Entegrasyonlar",
+    "services.tabWeb": "Profesyonel Web Siteleri",
 
     "services.automation.desc": "n8n veya Zapier ile tekrarlayan iş akışlarını bağlayın ve otomatikleştirin.",
     "services.automation.check1": "Tekrarlayan görevleri manuel emek harcamadan tamamlayın",
@@ -277,6 +304,18 @@ const translations = {
     "services.custom.step2": "Arayüz geliştirildi",
     "services.custom.step3": "Sistemler bağlandı",
     "services.custom.step4": "Test edildi ve yayında",
+
+    "services.web.desc": "Profesyonel, modern web siteleri – hızlı, responsive ve otomasyon ile yapay zekaya akıllıca bağlı.",
+    "services.web.check1": "İşletmeler ve serbest çalışanlar için modern, responsive web siteleri",
+    "services.web.check2": "Hızlı yüklenme süreleri ve sağlam SEO temelleri",
+    "services.web.check3": "Doğrudan entegre iletişim formları, sohbet ve otomasyonlar",
+    "services.web.check4": "Markanıza uygun özel tasarım",
+    "services.web.workflowTitle": "Kurumsal Web Sitesi",
+    "services.web.workflowMeta": "Durum: Yayında",
+    "services.web.step1": "Konsept ve tasarım",
+    "services.web.step2": "Geliştirme",
+    "services.web.step3": "SEO ve performans kontrolü",
+    "services.web.step4": "Yayına alma",
 
     "about.heading": "Hakkımda",
     "about.text": "Ben Mustafa Bozdogan, işletmelerin süreçlerini otomatikleştirmesine ve yapay zekayı gerçek değer yarattığı yerlerde kullanmasına yardımcı oluyorum. Odak noktam, mevcut sistemlere uyum sağlayan pragmatik çözümler: büyümüş yapıların yerini almak değil, en çok fayda sağladığı noktalarda hedefli otomasyon.",
