@@ -88,7 +88,7 @@ const translations = {
     "services.web.step4": "Live-Schaltung",
 
     "about.heading": "Über mich",
-    "about.text": "Ich bin Mustafa Bozdogan und unterstütze Unternehmen dabei, Prozesse zu automatisieren und KI dort einzusetzen, wo sie echten Mehrwert schafft. Mein Fokus liegt auf pragmatischen Lösungen, die sich in bestehende Systeme einfügen: kein Ersatz gewachsener Strukturen, sondern gezielte Automatisierung an den Stellen, an denen sie sich am meisten lohnt.",
+    "about.text": "Ich bin Mustafa Bozdogan – Anwendungsentwickler und Systemarchitekt für Unternehmen. Ich unterstütze Sie dabei, Prozesse zu automatisieren und KI dort einzusetzen, wo sie echten Mehrwert schafft, und baue bei Bedarf die passenden Anwendungen und Systeme gleich mit auf. Mein Fokus liegt auf pragmatischen Lösungen, die sich in bestehende Systeme einfügen: kein Ersatz gewachsener Strukturen, sondern gezielte Automatisierung und Entwicklung an den Stellen, an denen sie sich am meisten lohnt.",
 
     "references.heading": "Beispielprojekte",
     "references.intro": "Anonymisierte Beispiele typischer Projekte zur Veranschaulichung, nicht als Referenz konkreter Kunden.",
@@ -203,7 +203,7 @@ const translations = {
     "services.web.step4": "Going live",
 
     "about.heading": "About Me",
-    "about.text": "I'm Mustafa Bozdogan, and I help businesses automate processes and apply AI where it creates real value. My focus is on pragmatic solutions that fit into existing systems: not a replacement for what already works, but targeted automation exactly where it pays off most.",
+    "about.text": "I'm Mustafa Bozdogan – an application developer and systems architect for businesses. I help you automate processes, apply AI where it creates real value, and build the applications and systems behind them when needed. My focus is on pragmatic solutions that fit into existing systems: not a replacement for what already works, but targeted automation and development exactly where it pays off most.",
 
     "references.heading": "Example Projects",
     "references.intro": "Anonymized examples of typical projects for illustration only, not references to specific clients.",
@@ -318,7 +318,7 @@ const translations = {
     "services.web.step4": "Yayına alma",
 
     "about.heading": "Hakkımda",
-    "about.text": "Ben Mustafa Bozdogan, işletmelerin süreçlerini otomatikleştirmesine ve yapay zekayı gerçek değer yarattığı yerlerde kullanmasına yardımcı oluyorum. Odak noktam, mevcut sistemlere uyum sağlayan pragmatik çözümler: büyümüş yapıların yerini almak değil, en çok fayda sağladığı noktalarda hedefli otomasyon.",
+    "about.text": "Ben Mustafa Bozdogan – işletmeler için uygulama geliştiricisi ve sistem kurucusuyum. Süreçlerinizi otomatikleştirmenize, yapay zekayı gerçek değer yarattığı yerlerde kullanmanıza yardımcı oluyor, gerektiğinde bunun arkasındaki uygulamaları ve sistemleri de kuruyorum. Odak noktam, mevcut sistemlere uyum sağlayan pragmatik çözümler: büyümüş yapıların yerini almak değil, en çok fayda sağladığı noktalarda hedefli otomasyon ve geliştirme.",
 
     "references.heading": "Örnek Projeler",
     "references.intro": "Tipik projelerin anonimleştirilmiş örnekleri açıklama amaçlıdır, belirli müşterilere referans değildir.",
