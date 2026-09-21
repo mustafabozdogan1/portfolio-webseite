@@ -113,8 +113,8 @@ const translations = {
     "footer.impressum": "Impressum",
     "footer.datenschutz": "Datenschutz",
 
-    "meta.title": "Mustafa Bozdogan — KI & Prozessautomatisierung für Unternehmen",
-    "meta.description": "Mustafa Bozdogan unterstützt Unternehmen bei der Automatisierung von Prozessen mit KI, n8n/Zapier-Workflows, Daten-Reporting und individuellen Software-Integrationen.",
+    "meta.title": "Mustafa Bozdoğan — İşletmeler İçin Otomasyon Sistemleri",
+    "meta.description": "Mustafa Bozdoğan, işletmelere yapay zeka ile süreç otomasyonu, n8n/Zapier iş akışları, veri raporlama ve özel yazılım entegrasyonları konusunda destek olur.",
   },
 
   en: {
