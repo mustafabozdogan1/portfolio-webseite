@@ -8,6 +8,7 @@ const translations = {
     "nav.services": "Leistungen",
     "nav.about": "Über mich",
     "nav.references": "Beispiele",
+    "nav.academy": "Akademie-Demo",
     "nav.contact": "Kontakt",
     "nav.toggleLabel": "Menü öffnen",
 
@@ -123,6 +124,7 @@ const translations = {
     "nav.services": "Services",
     "nav.about": "About Me",
     "nav.references": "Examples",
+    "nav.academy": "Academy Demo",
     "nav.contact": "Contact",
     "nav.toggleLabel": "Open menu",
 
@@ -238,6 +240,7 @@ const translations = {
     "nav.services": "Hizmetler",
     "nav.about": "Hakkımda",
     "nav.references": "Örnekler",
+    "nav.academy": "Akademi Demo",
     "nav.contact": "İletişim",
     "nav.toggleLabel": "Menüyü aç",
 
